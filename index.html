@@ -79,6 +79,8 @@
         else {
             addMessage(message.content, "message", peerId, isSelf);
         }
+
+        $status.innerText = "Welcome to the office";
     });
 
     skylink.on('dataTransferState', function (state, transferId, peerId, transferInfo, error) {
@@ -132,7 +134,7 @@
     });
 
     skylink.init({
-        apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
+        apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
         defaultRoom: myip
     }, function() {
         skylink.joinRoom();

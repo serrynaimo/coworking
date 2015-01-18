@@ -1,7 +1,6 @@
 body {
     background: #fff;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 0.5em;
 }
 
 #status {
@@ -9,8 +8,8 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 20px;
-    line-height: 20px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
     color: #fff;
     background: #444;
@@ -19,16 +18,16 @@ body {
 
 #users {
     position: absolute;
-    top: 20px;
+    top: 30px;
     left: 0;
     right: 0;
-    height: 90px;
+    height: 120px;
     background: #000;
 }
 
 #users > video, #users > img {
-    width: 120px;
-    height: 90px;
+    width: 160px;
+    height: 120px;
     margin: 0;
     padding: 0;
     background: #000;
@@ -36,7 +35,7 @@ body {
 
 #container {
   position: absolute;
-  top: 110px;
+  top: 150px;
   bottom: 40px;
   left: 0;
   right: 0;
@@ -49,13 +48,13 @@ body {
 }
 
 #chatbox > div {
-    min-height: 36px;
+
 }
 
 #chatbox > div > img {
     display: inline-block;
-    width: 48px;
-    height: 36px;
+    width: 60px;
+    height: 45px;
 }
 
 #chatbox > div > span {
@@ -78,10 +77,11 @@ body {
     border-top: 1px solid #888;
     margin: 0;
     width: 100%;
-    padding: 0 20px;
+    padding: 0 15px;
     line-height: 39px;
     background: #fff;
     outline: 0;
+    font-size: 1em;
 }
 
 .action {
