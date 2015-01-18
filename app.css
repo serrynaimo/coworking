@@ -1,0 +1,94 @@
+body {
+    background: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 0.5em;
+}
+
+#status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    color: #fff;
+    background: #444;
+    border-bottom: 1px solid #333;
+}
+
+#users {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background: #000;
+}
+
+#users > video, #users > img {
+    width: 120px;
+    height: 90px;
+    margin: 0;
+    padding: 0;
+    background: #000;
+}
+
+#container {
+  position: absolute;
+  top: 110px;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+}
+
+#chatbox {
+  position: absolute;
+  bottom: 0px;
+}
+
+#chatbox > div {
+    min-height: 36px;
+}
+
+#chatbox > div > img {
+    display: inline-block;
+    width: 48px;
+    height: 36px;
+}
+
+#chatbox > div > span {
+    display: inline-block;
+    padding: 4px 10px;
+    vertical-align: top;
+}
+
+#controls {
+    position: absolute;
+    height: 40px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#msg {
+    height: 39px;
+    border: 0;
+    border-top: 1px solid #888;
+    margin: 0;
+    width: 100%;
+    padding: 0 20px;
+    line-height: 39px;
+    background: #fff;
+    outline: 0;
+}
+
+.action {
+  font-style: italic;
+  color: gray;
+}
+
+.you {
+  font-weight: bold;
+}

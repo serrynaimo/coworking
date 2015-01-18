@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="http://www.facebook.com/2008/fbml"
+    itemscope itemtype="http://schema.org/WebPage">
+<head>
+    <meta charset="utf-16">
+    <title>The Office</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <meta property="og:site_name" content="">
+
+    <meta name="git:tag" content="@@tag">
+    <meta name="git:rev" content="@@rev">
+    <meta name="git:date" content="@@date">
+
+    <meta name="viewport" content="width=600">
+
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <section id="status">Idle</section>
+    <section id="users"><video id="myvideo" muted autoplay></video></section>
+    <div id="container"><div id="chatbox"></div></div>
+    <div id="controls">
+        <input id="msg" type="text" placeholder="Chat message" />
+    </div>
+    <canvas id="photo" style="display: none;" width="320" height="240"></canvas>
+
+    <script type="text/javascript" src="//l2.io/ip.js?var=myip"></script>
+    <script type="text/javascript" src="//cdn.temasys.com.sg/skylink/skylinkjs/0.5.x/skylink.complete.min.js"></script>
+    <script type="text/javascript">
+
+    var skylink = new Skylink(),
+        $video = document.getElementById('myvideo'),
+        $users = document.getElementById('users'),
+        $msg = document.getElementById('msg'),
+        $status = document.getElementById('status'),
+        $chatbox = document.getElementById('chatbox'),
+        $photo = document.getElementById('photo'),
+        peer_pics = [],
+        last_pic = null,
+        photo_interval = null;
+
+    var online = false;
+
+    skylink.setLogLevel(skylink.LOG_LEVEL.DEBUG);
+    skylink.setDebugMode(true);
+
+    skylink.on('incomingStream', function (peerId, stream, isSelf) {
+        if(isSelf) {
+            $status.innerText = "Welcome to the office";
+            attachMediaStream($video, stream);
+
+            photo_interval = setInterval(function() {
+                capture();
+            }, 5000);
+
+            capture();
+        }
+        else {
+            $users.replaceChild("img_" + peerId, img);
+        }
+    });
+
+    skylink.on('incomingMessage', function (message, peerId, peerInfo, isSelf) {
+        if(message.content.substr(0,1) === '/') {
+
+        }
+        else {
+            addMessage(message.content, "message", peerId, isSelf);
+        }
+    });
+
+    skylink.on('dataTransferState', function (state, transferId, peerId, transferInfo, error) {
+        if(state === skylink.DATA_TRANSFER_STATE.UPLOAD_REQUEST) {
+            skylink.respondBlobRequest(peerId, true);
+            console.log("Incoming Request from " + peerId);
+        }
+        else if(state === skylink.DATA_TRANSFER_STATE.DOWNLOAD_COMPLETED) {
+            console.log("Download completed from " + peerId);
+            var $img = document.getElementById("img_" + peerId);
+
+            if(!$img) {
+                $img = document.createElement('img');
+                $img.id = "img_" + peerId;
+                $users.appendChild($img);
+            }
+
+            var data = URL.createObjectURL(transferInfo.data);
+            peer_pics[peerId] = data;
+            $img.src = data;
+        }
+        else if(error) {
+            $status.innerText = error.message;
+        }
+    });
+
+    skylink.on('dataChannelState', function (state, peerId) {
+        if(state == skylink.DATA_CHANNEL_STATE.OPEN) {
+
+        }
+    });
+
+    skylink.on('mediaAccessSuccess', function (stream) {
+        attachMediaStream($video, stream);
+        updatePeerInfo();
+    });
+
+    skylink.on('readyStateChange', function(state) {
+        if(state === 2) {
+            $status.innerText = "Please smile while we take a picture :)";
+        }
+    });
+
+    skylink.on('peerJoined', function (peerId, peerInfo, isSelf) {
+
+    });
+
+    skylink.on('peerLeft', function (peerId, peerInfo, isSelf) {
+        var $img = document.getElementById("img_" + peerId);
+        $users.removeChild($img);
+    });
+
+    skylink.init({
+        apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
+        defaultRoom: myip
+    }, function() {
+        skylink.joinRoom();
+        skylink.getUserMedia({video: true});
+    });
+
+    function sendMessage() {
+      skylink.sendP2PMessage($msg.value);
+      $msg.value = '';
+      $msg.select();
+    }
+
+    function addMessage(message, className, peerId, isSelf) {
+        var div = document.createElement('div');
+        div.className = className;
+        $chatbox.appendChild(div);
+
+        var img = document.createElement('img');
+        img.src = isSelf ? last_pic : peer_pics[peerId];
+        div.appendChild(img);
+
+        var span = document.createElement('span');
+        span.textContent = message;
+        div.appendChild(span);
+    }
+
+    function capture() {
+        var ctx = $photo.getContext("2d");
+        ctx.drawImage($video, 0, 0, 320, 240);
+
+        last_pic = $photo.toDataURL('image/jpeg', 0.8);
+
+        var blob = dataURL2Blob(last_pic);
+
+        skylink.sendBlobData(blob, {
+            size: blob.size,
+            name: (new Date()).toString()
+        });
+    }
+
+    function dataURL2Blob(dataURL) {
+        var BASE64_MARKER = ';base64,';
+        if (dataURL.indexOf(BASE64_MARKER) == -1) {
+          var parts = dataURL.split(',');
+          var contentType = parts[0].split(':')[1];
+          var raw = decodeURIComponent(parts[1]);
+
+          return new Blob([raw], {type: contentType});
+        }
+
+        var parts = dataURL.split(BASE64_MARKER);
+        var contentType = parts[0].split(':')[1];
+        var raw = window.atob(parts[1]);
+        var rawLength = raw.length;
+
+        var uInt8Array = new Uint8Array(rawLength);
+
+        for (var i = 0; i < rawLength; ++i) {
+          uInt8Array[i] = raw.charCodeAt(i);
+        }
+
+        return new Blob([uInt8Array], {type: contentType});
+    }
+
+    $msg.onkeydown = function(e) {
+        if(e.keyCode === 13) {
+            sendMessage();
+        }
+    }
+
+    </script>
+
+</body>
+</html>
