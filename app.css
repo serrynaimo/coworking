@@ -14,6 +14,7 @@ body {
     color: #fff;
     background: #444;
     border-bottom: 1px solid #333;
+    z-index: 1;
 }
 
 #users {
@@ -23,6 +24,7 @@ body {
     right: 0;
     height: 120px;
     background: #000;
+    z-index: 2;
 }
 
 #users > video, #users > img {
@@ -33,6 +35,24 @@ body {
     background: #000;
     border: 0;
     outline: 0;
+    position: relative;
+    z-index: 3;
+    -webkit-transition: all .5s ease-out;
+    box-shadow: 0 0 0 red;
+}
+
+#users > img.hailing {
+    -webkit-animation: hail linear 1s infinite;
+    z-index: 4;
+}
+
+@-webkit-keyframes hail {
+    0%, 100% {
+        box-shadow: 0 0 10px red;
+    }
+    50% {
+        box-shadow: 0 0 20px red;
+    }
 }
 
 #myvideo {

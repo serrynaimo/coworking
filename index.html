@@ -35,9 +35,11 @@
         <input id="msg" type="text" placeholder="Chat message" />
     </div>
     <canvas id="photo" style="display: none;" width="320" height="240"></canvas>
+    <audio id="alert" src="hailalert_1.mp3" style="display: none;"></audio>
 
-    <script type="text/javascript" src="//l2.io/ip.js?var=myip"></script>
+    <!--<script type="text/javascript" src="//l2.io/ip.js?var=myip"></script>-->
     <script type="text/javascript" src="//cdn.temasys.com.sg/skylink/skylinkjs/0.5.x/skylink.complete.min.js"></script>
+    <script type="text/javascript" src="helpers.js"></script>
     <script type="text/javascript">
 
     var skylink = new Skylink(),
@@ -48,11 +50,13 @@
         $status = document.getElementById('status'),
         $chatbox = document.getElementById('chatbox'),
         $photo = document.getElementById('photo'),
+        $alert = document.getElementById('alert'),
         peer_pics = [],
         last_pic = null,
-        photo_interval = null;
+        capture_timeout = null;
 
-    var online = false;
+    var online = false,
+        focussed = true;
 
     skylink.setLogLevel(skylink.LOG_LEVEL.DEBUG);
     skylink.setDebugMode(true);
@@ -62,19 +66,35 @@
             $status.innerText = "Welcome to the office";
             attachMediaStream($video, stream);
 
-            photo_interval = setInterval(function() {
-                capture();
-                online = true;
-            }, 5000);
+            capture_timeout = setTimeout(capture, 2000);
         }
         else {
-            $users.replaceChild("img_" + peerId, img);
+            var $vid = document.createElement('video');
+            $vid.id = "vid_" + peerId;
+            $vid.autoplay = true;
+            vid.onclick = function() {
+                skylink.sendMessage('/hangup');
+            };
+            $users.replaceChild("img_" + peerId, $vid);
         }
     });
 
     skylink.on('incomingMessage', function (message, peerId, peerInfo, isSelf) {
         if(message.content.substr(0,1) === '/') {
-
+            var msg = message.content.substr(1);
+            if(msg === 'hail') {
+                $alert.play();
+                var $img = document.getElementById("img_" + peerId);
+                $img.className = "hailing";
+                setTimeout(function () {
+                   $img.className = "";
+                }, 5000);
+            }
+            else if(msg === 'hangup') {
+                skylink._stopLocalMediaStreams();
+                var $img = addUserImage(peerId);
+                $users.replaceChild("vid_" + peerId, $img);
+            }
         }
         else {
             addMessage(message.content, "message", peerId, isSelf);
@@ -93,9 +113,7 @@
             var $img = document.getElementById("img_" + peerId);
 
             if(!$img) {
-                $img = document.createElement('img');
-                $img.id = "img_" + peerId;
-                $users.appendChild($img);
+                $img = addUserImage(peerId);
             }
 
             var data = URL.createObjectURL(transferInfo.data);
@@ -135,7 +153,7 @@
 
     skylink.init({
         apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
-        defaultRoom: myip
+        defaultRoom: ''
     }, function() {
         skylink.joinRoom();
         skylink.getUserMedia({video: {
@@ -145,6 +163,25 @@
             }
         }, audio: true});
     });
+
+    function addUserImage(peerId) {
+        $img = document.createElement('img');
+        $img.id = "img_" + peerId;
+        $img.onclick = function() {
+            skylink.sendMessage('/hail', peerId);
+            $img.className = "hailing";
+            setTimeout(function () {
+               $img.className = "";
+               /*skylink.sendStream({video: {
+                    width: 320,
+                    height: 240
+               }, audio: true});*/
+            }, 5000);
+            console.log("Hailing " + peerId);
+        }
+        $users.appendChild($img);
+        return $img;
+    }
 
     function sendMessage() {
       skylink.sendP2PMessage($msg.value);
@@ -167,8 +204,15 @@
     }
 
     function capture() {
+        clearTimeout(capture_timeout);
+        online = true;
+
         var ctx = $photo.getContext("2d");
         ctx.drawImage($video, 0, 0, 320, 240);
+
+        if(!focussed) {
+            stackBlurCanvasRGB(ctx, 0, 0, 320, 240, 35);
+        }
 
         last_pic = $photo.toDataURL('image/jpeg', 0.8);
 
@@ -180,30 +224,8 @@
             size: blob.size,
             name: (new Date()).toString()
         });
-    }
 
-    function dataURL2Blob(dataURL) {
-        var BASE64_MARKER = ';base64,';
-        if (dataURL.indexOf(BASE64_MARKER) == -1) {
-          var parts = dataURL.split(',');
-          var contentType = parts[0].split(':')[1];
-          var raw = decodeURIComponent(parts[1]);
-
-          return new Blob([raw], {type: contentType});
-        }
-
-        var parts = dataURL.split(BASE64_MARKER);
-        var contentType = parts[0].split(':')[1];
-        var raw = window.atob(parts[1]);
-        var rawLength = raw.length;
-
-        var uInt8Array = new Uint8Array(rawLength);
-
-        for (var i = 0; i < rawLength; ++i) {
-          uInt8Array[i] = raw.charCodeAt(i);
-        }
-
-        return new Blob([uInt8Array], {type: contentType});
+        capture_timeout = setTimeout(capture, 5000);
     }
 
     $msg.onkeydown = function(e) {
@@ -213,9 +235,17 @@
     }
 
     $pic.onclick = function() {
-        clearInterval(photo_interval);
         capture();
-        photo_interval = setInterval(capture, 5000);
+    }
+
+    window.onfocus = function () {
+        focussed = true;
+        capture();
+    }
+
+    window.onblur = function() {
+        focussed = false;
+        capture();
     }
 
     </script>
