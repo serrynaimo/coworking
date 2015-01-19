@@ -138,7 +138,12 @@
         defaultRoom: myip
     }, function() {
         skylink.joinRoom();
-        skylink.getUserMedia({video: true, audio: true});
+        skylink.getUserMedia({video: {
+            resolution: {
+                width: 320,
+                height: 240
+            }
+        }, audio: true});
     });
 
     function sendMessage() {
