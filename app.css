@@ -29,6 +29,7 @@ body {
     z-index: 2;
     white-space: nowrap;
     overflow-x: auto;
+    -webkit-user-select: none;
 }
 
 #users > video, #users > img {
