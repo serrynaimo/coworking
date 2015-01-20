@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
-    <section id="status">Idle</section>
+    <section id="status">THE OFFICE</section>
     <section id="users"><video id="myvideo" muted autoplay></video><img id="mypic" /></section>
     <div id="container"><div id="chatbox"></div></div>
     <div id="controls">
@@ -47,26 +47,24 @@
         $pic = document.getElementById('mypic'),
         $users = document.getElementById('users'),
         $msg = document.getElementById('msg'),
-        $status = document.getElementById('status'),
         $chatbox = document.getElementById('chatbox'),
         $photo = document.getElementById('photo'),
         $alert = document.getElementById('alert'),
+        user = {},
         peer_pics = [],
         last_pic = null,
         capture_timeout = null;
 
     var online = false,
-        focussed = true;
+        focussed = true,
+        mediaOK = false;
 
     skylink.setLogLevel(skylink.LOG_LEVEL.DEBUG);
     skylink.setDebugMode(true);
 
     skylink.on('incomingStream', function (peerId, stream, isSelf) {
         if(isSelf) {
-            $status.innerText = "Welcome to the office";
             attachMediaStream($video, stream);
-
-            capture_timeout = setTimeout(capture, 3000);
         }
         else {
             var $vid = document.createElement('video');
@@ -90,6 +88,9 @@
                    $img.className = "";
                 }, 5000);
             }
+            else if(msg.substr(0,8) === 'getaroom') {
+                addMessage('<a href="http://getaroom.io/' + msg.substr(9) + '" target="_blank">Get a room</a>', 'getaroom action', isSelf ? msg.substr(9) : peerId);
+            }
             else if(msg === 'hangup') {
                 skylink._stopLocalMediaStreams();
                 var $img = addUserImage(peerId);
@@ -99,8 +100,6 @@
         else {
             addMessage(message.content, "message", peerId, isSelf);
         }
-
-        $status.innerText = "Welcome to the office";
     });
 
     skylink.on('dataTransferState', function (state, transferId, peerId, transferInfo, error) {
@@ -112,16 +111,19 @@
             console.log("Download completed from " + peerId);
             var $img = document.getElementById("img_" + peerId);
 
-            if(!$img) {
-                $img = addUserImage(peerId);
-            }
-
             var data = URL.createObjectURL(transferInfo.data);
             peer_pics[peerId] = data;
+
+            if(!$img) {
+                var info = skylink.getPeerInfo(peerId);
+                $img = addUserImage(peerId, info.userData.name);
+                addMessage(info.userData.name + ' joined the office', 'action', peerId, false);
+            }
+
             $img.src = data;
         }
         else if(error && error.message) {
-            $status.innerText = error.message;
+            console.log(error.message);
         }
     });
 
@@ -133,41 +135,65 @@
 
     skylink.on('mediaAccessSuccess', function (stream) {
         attachMediaStream($video, stream);
-        updatePeerInfo();
+        capture_timeout = setTimeout(capture, 1000);
+        addMessage("Thanks. May I now know your name?", 'bot');
+        $msg.select();
+        mediaOK = true;
+    });
+
+    skylink.on('mediaAccessError', function (stream) {
+        addMessage("Sorry, I can't let you in like this.", 'bot');
     });
 
     skylink.on('readyStateChange', function(state) {
         if(state === 2) {
-            $status.innerText = "Please smile while we take a picture :)";
+
         }
     });
 
     skylink.on('peerJoined', function (peerId, peerInfo, isSelf) {
-
+        if(isSelf) {
+            online = true;
+            addMessage('Welcome to the office, ' + user.name + '.', 'bot');
+            skylink.setUserData(user);
+        }
     });
 
     skylink.on('peerLeft', function (peerId, peerInfo, isSelf) {
-        var $img = document.getElementById("img_" + peerId);
-        $users.removeChild($img);
+        if(isSelf) {
+            online = false;
+            addMessage('Bye', 'bot');
+        }
+        else {
+            var $img = document.getElementById("img_" + peerId);
+            $users.removeChild($img);
+            addMessage(peerInfo.userData.name + ' left the office', 'action', peerId, false);
+        }
     });
 
     skylink.init({
-        apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
+        apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
         defaultRoom: ''
     }, function() {
-        skylink.joinRoom();
         skylink.getUserMedia({video: {
             resolution: {
                 width: 320,
                 height: 240
             }
-        }, audio: true});
+        }, audio: false});
+        addMessage("Hey. I\'m the office security. Please share your camera so I can see you.", 'bot');
     });
 
-    function addUserImage(peerId) {
+    function addUserImage(peerId, name) {
         var $img = document.createElement('img');
         $img.id = "img_" + peerId;
-        $img.onclick = function() {
+        $users.appendChild($img);
+
+        var $span = document.createElement('span');
+        $span.id = "span_" + peerId;
+        $span.textContent = name;
+
+        $span.onclick = function() {
             skylink.sendMessage('/hail', peerId);
             $img.className = "hailing";
             setTimeout(function () {
@@ -179,33 +205,46 @@
             }, 5000);
             console.log("Hailing " + peerId);
         }
-        $users.appendChild($img);
+        $span.ondblclick = function () {
+            skylink.sendMessage('/getaroom ' + peerId, peerId);
+            console.log("Get a room invite to " + peerId);
+        }
+
+        $users.appendChild($span);
+
         return $img;
     }
 
     function sendMessage() {
       skylink.sendP2PMessage($msg.value);
-      $msg.value = '';
-      $msg.select();
     }
 
     function addMessage(message, className, peerId, isSelf) {
-        var div = document.createElement('div');
-        div.className = className;
-        $chatbox.appendChild(div);
+        var $div = document.createElement('div');
+        $div.className = className;
+        $chatbox.appendChild($div);
 
-        var img = document.createElement('img');
-        img.src = isSelf ? last_pic : peer_pics[peerId];
-        div.appendChild(img);
+        var $img = document.createElement('img');
+        if(className === 'bot') {
+            $img.src = 'bot.png';
+        }
+        else {
+            $img.src = isSelf ? last_pic : peer_pics[peerId];
+        }
+        $div.appendChild($img);
 
-        var span = document.createElement('span');
-        span.textContent = message;
-        div.appendChild(span);
+        var $span = document.createElement('span');
+        if(className === 'message') {
+            $span.innerHTML = message;
+        }
+        else {
+            $span.textContent = message;
+        }
+        $div.appendChild($span);
     }
 
     function capture() {
         clearTimeout(capture_timeout);
-        online = true;
 
         var ctx = $photo.getContext("2d");
         ctx.drawImage($video, 0, 0, 320, 240);
@@ -229,8 +268,16 @@
     }
 
     $msg.onkeydown = function(e) {
-        if(online && e.keyCode === 13) {
-            sendMessage();
+        if(e.keyCode === 13 && mediaOK) {
+            if(online) {
+                sendMessage();
+            }
+            else if(!user.name) {
+                user.name = $msg.value;
+                skylink.joinRoom();
+            }
+            $msg.value = '';
+            $msg.select();
         }
     }
 
@@ -241,6 +288,7 @@
     window.onfocus = function () {
         focussed = true;
         capture();
+        $msg.select();
     }
 
     window.onblur = function() {

@@ -47,6 +47,28 @@ body {
     margin-bottom: -4px;
 }
 
+#users > span {
+    display: inline-block;
+    position: relative;
+    width: 160px;
+    height: 120px;
+    line-height: 120px;
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: 200;
+    margin: 0 0 0 -160px;
+    opacity: 0;
+    vertical-align: top;
+    text-align: center;
+    -webkit-transition: opacity .2s ease-out;
+    z-index: 5;
+    cursor: default;
+}
+
+#users > span:hover {
+    opacity: 1;
+}
+
 #users > img.hailing {
     -webkit-animation: hail linear 1s infinite;
     z-index: 4;
@@ -116,11 +138,12 @@ body {
     font-size: 1em;
 }
 
-.action {
+.action, .bot {
   font-style: italic;
   color: gray;
 }
 
-.you {
-  font-weight: bold;
+.getaroom a {
+    font-style: italic;
+    color: #555;
 }
