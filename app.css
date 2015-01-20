@@ -61,7 +61,7 @@ body {
     }
 }
 
-#myvideo {
+#users > #myvideo {
     display: none;
 }
 
