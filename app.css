@@ -1,6 +1,7 @@
 body {
     background: #fff;
     font-family: Helvetica, Arial, sans-serif;
+    overflow: hidden;
 }
 
 #status {
@@ -23,11 +24,15 @@ body {
     left: 0;
     right: 0;
     height: 120px;
+    padding: 0;
     background: #000;
     z-index: 2;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
 #users > video, #users > img {
+    display: inline-block;
     width: 160px;
     height: 120px;
     margin: 0;
@@ -39,6 +44,7 @@ body {
     z-index: 3;
     -webkit-transition: all .5s ease-out;
     box-shadow: 0 0 0 red;
+    margin-bottom: -4px;
 }
 
 #users > img.hailing {
