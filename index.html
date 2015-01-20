@@ -135,7 +135,7 @@
 
     skylink.on('mediaAccessSuccess', function (stream) {
         attachMediaStream($video, stream);
-        capture_timeout = setTimeout(capture, 1000);
+        capture_timeout = setTimeout(capture, 2000);
         addMessage("Thanks. May I now know your name?", 'bot');
         $msg.select();
         mediaOK = true;
