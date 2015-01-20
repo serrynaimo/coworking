@@ -89,7 +89,7 @@
                 }, 5000);
             }
             else if(msg.substr(0,8) === 'getaroom') {
-                addMessage('<a href="http://getaroom.io/' + msg.substr(9) + '" target="_blank">Get a room</a>', 'getaroom action', isSelf ? msg.substr(9) : peerId);
+                addMessage('<a href="http://getaroom.io/' + msg.substr(9) + '" target="_blank">Get a room</a>', 'action', isSelf ? msg.substr(9) : peerId);
             }
             else if(msg === 'hangup') {
                 skylink._stopLocalMediaStreams();
@@ -234,7 +234,7 @@
         $div.appendChild($img);
 
         var $span = document.createElement('span');
-        if(className === 'message') {
+        if(className === 'action') {
             $span.innerHTML = message;
         }
         else {
