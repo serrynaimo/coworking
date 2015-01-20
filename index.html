@@ -117,7 +117,7 @@
             if(!$img) {
                 var info = skylink.getPeerInfo(peerId);
                 $img = addUserImage(peerId, info.userData.name);
-                addMessage(info.userData.name + ' joined the office', 'action', peerId, false);
+                addMessage(info.userData.name + ' is in the office', 'action', peerId, false);
             }
 
             $img.src = data;
