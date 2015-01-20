@@ -103,7 +103,17 @@ body {
 }
 
 #chatbox > div {
+    -webkit-animation: unveil .5s 1 ease-out;
+    margin-bottom: 0;
+}
 
+@-webkit-keyframes unveil {
+    0% {
+        margin-bottom: -45px;
+    },
+    100% {
+        margin-bottom: 0;
+    }
 }
 
 #chatbox > div > img {
