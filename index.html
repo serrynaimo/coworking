@@ -166,7 +166,9 @@
         }
         else {
             var $img = document.getElementById("img_" + peerId);
+            var $span = document.getElementById("span_" + peerId);
             $users.removeChild($img);
+            $users.removeChild($span);
             addMessage(peerInfo.userData.name + ' left the office', 'action', peerId, false);
         }
     });
