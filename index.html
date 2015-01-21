@@ -28,12 +28,15 @@
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
-    <section id="status">THE OFFICE</section>
-    <section id="users"><video id="myvideo" muted autoplay></video><img id="mypic" /></section>
-    <div id="container"><div id="chatbox"></div></div>
-    <div id="controls">
-        <textarea id="msg" placeholder="Chat message"></textarea>
+    <div id="app">
+        <section id="status">THE OFFICE</section>
+        <section id="users"><video id="myvideo" muted autoplay></video><img id="mypic" /></section>
+        <div id="chatcontainer"><div><div id="chatbox"></div></div></div>
+        <div id="controls">
+            <textarea id="msg" placeholder="Chat message"></textarea>
+        </div>
     </div>
+
     <canvas id="photo" style="display: none;" width="320" height="240"></canvas>
     <audio id="alert" src="beepbeep.mp3" style="display: none;"></audio>
 
@@ -47,6 +50,7 @@
         $pic = document.getElementById('mypic'),
         $users = document.getElementById('users'),
         $msg = document.getElementById('msg'),
+        $chatcontainer = document.getElementById('chatcontainer').children[0];
         $chatbox = document.getElementById('chatbox'),
         $photo = document.getElementById('photo'),
         $alert = document.getElementById('alert'),
@@ -174,8 +178,8 @@
     });
 
     skylink.init({
-        //apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
-        apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
+        apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
+        //apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
         defaultRoom: 'office'
     }, function() {
         skylink.getUserMedia({video: {
@@ -240,6 +244,7 @@
             $span.innerHTML = marked(message);
         }
         $div.appendChild($span);
+        $chatcontainer.scrollTop = $chatcontainer.scrollHeight;
     }
 
     function capture() {
