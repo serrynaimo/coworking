@@ -105,6 +105,7 @@ body {
 #chatbox > div {
     -webkit-animation: unveil .5s 1 ease-out;
     margin-bottom: 0;
+    min-height: 45px;
 }
 
 @-webkit-keyframes unveil {
@@ -117,15 +118,22 @@ body {
 }
 
 #chatbox > div > img {
-    display: inline-block;
+    float: left;
     width: 60px;
     height: 45px;
+    vertical-align: top;
 }
 
 #chatbox > div > span {
-    display: inline-block;
-    padding: 4px 10px;
-    vertical-align: top;
+    display: block;
+    margin-left: 60px;
+    padding: 5px 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+#chatbox > div > span > p:first-child {
+    margin-top: 0;
 }
 
 #controls {
@@ -137,13 +145,14 @@ body {
 }
 
 #msg {
-    height: 39px;
+    position: absolute;
+    height: 19px;
+    bottom: 0;
     border: 0;
     border-top: 1px solid #888;
     margin: 0;
     width: 100%;
-    padding: 0 15px;
-    line-height: 39px;
+    padding: 10px 15px;
     background: #fff;
     outline: 0;
     font-size: 1em;

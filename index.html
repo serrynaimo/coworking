@@ -32,7 +32,7 @@
     <section id="users"><video id="myvideo" muted autoplay></video><img id="mypic" /></section>
     <div id="container"><div id="chatbox"></div></div>
     <div id="controls">
-        <input id="msg" type="text" placeholder="Chat message" />
+        <textarea id="msg" placeholder="Chat message"></textarea>
     </div>
     <canvas id="photo" style="display: none;" width="320" height="240"></canvas>
     <audio id="alert" src="beepbeep.mp3" style="display: none;"></audio>
@@ -174,8 +174,8 @@
     });
 
     skylink.init({
-        //apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
-        apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
+        apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
+        //apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
         defaultRoom: ''
     }, function() {
         skylink.getUserMedia({video: {
@@ -218,10 +218,6 @@
         return $img;
     }
 
-    function sendMessage() {
-      skylink.sendP2PMessage($msg.value);
-    }
-
     function addMessage(message, className, peerId, isSelf) {
         var $div = document.createElement('div');
         $div.className = className;
@@ -241,7 +237,7 @@
             $span.innerHTML = message;
         }
         else {
-            $span.textContent = message;
+            $span.innerHTML = marked(message);
         }
         $div.appendChild($span);
     }
@@ -271,16 +267,18 @@
     }
 
     $msg.onkeydown = function(e) {
-        if(e.keyCode === 13 && mediaOK) {
+        if(!e.altKey && e.keyCode === 13 && mediaOK) {
             if(online) {
-                sendMessage();
+                skylink.sendP2PMessage($msg.value);
             }
             else if(!user.name) {
-                user.name = $msg.value;
+                user.name = $msg.value.replace('\n','').trim();
                 skylink.joinRoom();
             }
             $msg.value = '';
             $msg.select();
+
+            return false;
         }
     }
 
