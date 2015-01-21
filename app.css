@@ -132,7 +132,7 @@ body {
     position: relative;
 }
 
-#chatbox > div > span > p:first-child {
+#chatbox > div > span > *:first-child {
     margin-top: 0;
 }
 
