@@ -93,7 +93,11 @@
                 }, 5000);
             }
             else if(msg.substr(0,8) === 'getaroom') {
-                addMessage('<a href="http://getaroom.io/' + msg.substr(9) + '" target="_blank">Get a room with ' + peerInfo.userData.name + '</a>', 'action', isSelf ? msg.substr(9) : peerId);
+                var roomPeerId = msg.substr(9);
+                var name = isSelf ? skylink.getPeerInfo(roomPeerId).userData.name : peerInfo.userData.name;
+
+                addMessage('<a href="http://getaroom.io/' + roomPeerId + '" target="_blank">Get a meeting room with ' + name + '</a>',
+                    'action', isSelf ? roomPeerId : peerId);
             }
             else if(msg === 'hangup') {
                 skylink._stopLocalMediaStreams();
