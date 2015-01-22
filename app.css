@@ -32,6 +32,9 @@ body {
     white-space: nowrap;
     overflow-x: auto;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 #users > video, #users > img {
@@ -46,6 +49,9 @@ body {
     position: relative;
     z-index: 3;
     -webkit-transition: all .5s ease-out;
+    -moz-transition: all .5s ease-out;
+    -o-transition: all .5s ease-out;
+    transition: all .5s ease-out;
     box-shadow: 0 0 0 red;
     margin-bottom: -4px;
 }
@@ -64,6 +70,9 @@ body {
     vertical-align: top;
     text-align: center;
     -webkit-transition: opacity .2s ease-out;
+    -moz-transition: opacity .2s ease-out;
+    -o-transition: opacity .2s ease-out;
+    transition: opacity .2s ease-out;
     z-index: 5;
     cursor: default;
 }
@@ -74,10 +83,37 @@ body {
 
 #users > img.hailing {
     -webkit-animation: hail linear 1s infinite;
+    -moz-animation: hail linear 1s infinite;
+    -o-animation: hail linear 1s infinite;
+    animation: hail linear 1s infinite;
     z-index: 4;
 }
 
 @-webkit-keyframes hail {
+    0%, 100% {
+        box-shadow: 0 0 10px red;
+    }
+    50% {
+        box-shadow: 0 0 20px red;
+    }
+}
+@-moz-keyframes hail {
+    0%, 100% {
+        box-shadow: 0 0 10px red;
+    }
+    50% {
+        box-shadow: 0 0 20px red;
+    }
+}
+@-o-keyframes hail {
+    0%, 100% {
+        box-shadow: 0 0 10px red;
+    }
+    50% {
+        box-shadow: 0 0 20px red;
+    }
+}
+@keyframes hail {
     0%, 100% {
         box-shadow: 0 0 10px red;
     }
