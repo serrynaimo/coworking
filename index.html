@@ -318,7 +318,12 @@
             }
             else if(!user.name) {
                 user.name = $msg.value.replace('\n','').trim();
-                skylink.joinRoom();
+                skylink.joinRoom({
+                    video: false,
+                    audio: {
+                       stereo: false
+                    }
+                });
             }
             $msg.value = '';
             $msg.select();
