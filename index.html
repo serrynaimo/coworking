@@ -151,6 +151,17 @@
             skylink.setUserData(user);
             replay();
             addMessage('Welcome to the office, ' + user.name + '.', 'bot');
+            skylink.sendStream({
+                video: {
+                    resolution: {
+                        width: 160,
+                        height: 120
+                    }
+                },
+                audio: {
+                    stereo: false
+                }
+            });
         }
     });
 
@@ -324,17 +335,7 @@
             }
             else if(!user.name) {
                 user.name = $msg.value.replace('\n','').trim();
-                skylink.joinRoom({
-                    video: {
-                        resolution: {
-                            width: 160,
-                            height: 120
-                        }
-                    },
-                    audio: {
-                        stereo: false
-                    }
-                });
+                skylink.joinRoom();
             }
             $msg.value = '';
             $msg.select();
