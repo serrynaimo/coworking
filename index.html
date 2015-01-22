@@ -236,7 +236,10 @@
         else {
             $img.src = isSelf ? last_pic : peer_pics[peerId];
         }
-        $div.appendChild($img);
+
+        if($img.src) {
+            $div.appendChild($img);
+        }
 
         var $span = document.createElement('span');
         if(className === 'action') {
