@@ -160,6 +160,7 @@
             online = true;
             addMessage('Welcome to the office, ' + user.name + '.', 'bot');
             skylink.setUserData(user);
+            replay();
         }
     });
 
@@ -223,9 +224,10 @@
     }
 
     function addMessage(message, className, peerId, isSelf) {
+        var id = (new Date()).getTime();
         var $div = document.createElement('div');
-        $div.className = className;
-        $chatbox.appendChild($div);
+        $div.className = className + (isSelf ? 'isself': '');
+        $div.id = 'msg_' + id;
 
         var $img = document.createElement('img');
         if(className === 'bot') {
@@ -245,9 +247,27 @@
         }
         $div.appendChild($span);
 
+        if(className !== 'bot') {
+            localStorage[id] = $div.outerHTML;
+        }
+
+        $chatbox.appendChild($div);
+
         if(isSelf) {
             $chatcontainer.scrollTop = $chatcontainer.scrollHeight;
         }
+    }
+
+    function replay() {
+        for(var i = 0, len = localStorage.length; i < len; i++) {
+            var key = localStorage.key(i);
+            if(key > (new Date()).getTime() - 1000 * 60 * 60 * 24 * 5) {
+                var $div = document.createElement('div');
+                $div.innerHTML = localStorage[key];
+                $chatbox.appendChild($div.children[0]);
+            }
+        }
+        $chatcontainer.scrollTop = $chatcontainer.scrollHeight;
     }
 
     function capture() {
@@ -277,7 +297,13 @@
     $msg.onkeydown = function(e) {
         if(!e.altKey && e.keyCode === 13 && mediaOK) {
             if(online) {
-                skylink.sendP2PMessage($msg.value);
+                if($msg.value === '/clear') {
+                    localStorage.clear();
+                    $chatbox.innerHTML = '';
+                }
+                else {
+                    skylink.sendP2PMessage($msg.value);
+                }
             }
             else if(!user.name) {
                 user.name = $msg.value.replace('\n','').trim();
