@@ -131,8 +131,8 @@
     });
 
     skylink.on('mediaAccessSuccess', function (stream) {
+        attachMediaStream($video, stream);
         if(!user.name) {
-            attachMediaStream($video, stream);
             capture_timeout = setTimeout(capture, 2000);
             addMessage("Thanks. May I now know your name?", 'bot');
             $msg.select();
@@ -321,6 +321,12 @@
             else if(!user.name) {
                 user.name = $msg.value.replace('\n','').trim();
                 skylink.joinRoom({
+                    video: {
+                        resolution: {
+                            width: 160,
+                            height: 120
+                        }
+                    },
                     audio: {
                        stereo: false
                     }
