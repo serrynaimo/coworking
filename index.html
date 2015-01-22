@@ -321,7 +321,6 @@
             else if(!user.name) {
                 user.name = $msg.value.replace('\n','').trim();
                 skylink.joinRoom({
-                    video: false,
                     audio: {
                        stereo: false
                     }
