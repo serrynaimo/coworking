@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <canvas id="photo" style="display: none;" width="320" height="240"></canvas>
+    <canvas id="photo" style="display: none;" width="160" height="120"></canvas>
     <audio id="alert" src="beepbeep.mp3" style="display: none;"></audio>
 
     <!--<script type="text/javascript" src="//l2.io/ip.js?var=myip"></script>-->
@@ -56,6 +56,8 @@
         $alert = document.getElementById('alert'),
         user = {},
         peer_pics = [],
+        peer_audios = [],
+        audioTimeouts = [],
         last_pic = null,
         capture_timeout = null;
 
@@ -71,13 +73,11 @@
             attachMediaStream($video, stream);
         }
         else {
-            var $vid = document.createElement('video');
-            $vid.id = "vid_" + peerId;
-            $vid.autoplay = true;
-            vid.onclick = function() {
-                skylink.sendMessage('/hangup');
-            };
-            $users.replaceChild("img_" + peerId, $vid);
+            var $audio = document.createElement('audio');
+            $audio.id = "audio_" + peerId;
+            $audio.autoplay = true;
+            peer_audios.push($audio);
+            $streams.appendChild($audio);
         }
     });
 
@@ -98,11 +98,6 @@
 
                 addMessage('<a href="http://getaroom.io/' + roomPeerId + '" target="_blank">Get a meeting room with ' + name + '</a>',
                     'action', isSelf ? roomPeerId : peerId);
-            }
-            else if(msg === 'hangup') {
-                skylink._stopLocalMediaStreams();
-                var $img = addUserImage(peerId);
-                $users.replaceChild("vid_" + peerId, $img);
             }
         }
         else {
@@ -164,8 +159,10 @@
         else {
             var $img = document.getElementById("img_" + peerId);
             var $span = document.getElementById("span_" + peerId);
+            var $audio = document.getElementById("audio_" + peerId);
             $users.removeChild($img);
             $users.removeChild($span);
+            $users.removeChild($audio);
             addMessage(peerInfo.userData.name + ' left the office', 'action', peerId, false);
         }
     });
@@ -177,10 +174,12 @@
     }, function() {
         skylink.getUserMedia({video: {
             resolution: {
-                width: 320,
-                height: 240
+                width: 160,
+                height: 120
             }
-        }, audio: false});
+        }, audio: {
+            stereo: false
+        }});
         addMessage("Hey. I\'m the office security. Please share your camera above so I can see you. <br/><br/> The coworking office is a hangout for remote workers to collaborate. It's a live-chat where you can see each other through pictures that update every 5 seconds. Additionally there are a few more things you can do: <ul><li>Your picture will blur to give you a little privacy if you're not actively following this browser tab or your window is inactive</li><li>Click on somebodies picture to hail that person</li><li>Type /hail to alert everybody in the office</li><li>Double-click somebodies picture to invite that person into a real-time audio/video meeting room</li><li>Type /clear to empty your local chat history</li><li>The chat supports <a href='https://help.github.com/articles/github-flavored-markdown/' target='_blank'>Github flavored markdown</a></li></ul>The coworking office uses WebRTC with <a href='http://temasys.github.io' target='_blank'>Skylink</a> and we don't record pictures or messages. They are send peer-to-peer directly to the other coworkers. This is a public space, so please be respectful to others.", 'bot');
     });
 
@@ -198,10 +197,6 @@
             $img.className = "hailing";
             setTimeout(function () {
                $img.className = "";
-               /*skylink.sendStream({video: {
-                    width: 320,
-                    height: 240
-               }, audio: true});*/
             }, 5000);
             console.log("Hailing " + peerId);
         }
@@ -248,9 +243,7 @@
 
         $chatbox.appendChild($div);
 
-        //if(isSelf) {
-            $chatcontainer.scrollTop = $chatcontainer.scrollHeight;
-        //}
+        $chatcontainer.scrollTop = $chatcontainer.scrollHeight;
     }
 
     function replay() {
@@ -269,10 +262,10 @@
         clearTimeout(capture_timeout);
 
         var ctx = $photo.getContext("2d");
-        ctx.drawImage($video, 0, 0, 320, 240);
+        ctx.drawImage($video, 0, 0, 160, 120);
 
         if(!focussed) {
-            stackBlurCanvasRGB(ctx, 0, 0, 320, 240, 35);
+            stackBlurCanvasRGB(ctx, 0, 0, 160, 120, 35);
         }
 
         last_pic = $photo.toDataURL('image/jpeg', 0.8);
@@ -287,6 +280,29 @@
         });
 
         capture_timeout = setTimeout(capture, 5000);
+    }
+
+    function adjustVolume($audio, to) {
+        if(!$audio) {
+            return;
+        }
+
+        clearTimeout(audioTimeouts[$audio.id]);
+
+        $audio.volume = $audio.volume < to ? $audio.volume += 0.05 : $audio.volume -= 0.05;
+
+        if(Math.abs($audio.volume - to) > 0.05) {
+            audioTimeouts[$audio.id] = setTimeout(function() {
+                adjustVolume($audio, to);
+            }, 50);
+        }
+    }
+
+    function adjustAllVolume(to) {
+        for(i in peer_audios) {
+            peer_audios[i].volume = to;
+            //adjustVolume(peer_audios[i], to);
+        }
     }
 
     $msg.onkeydown = function(e) {
@@ -318,11 +334,13 @@
     window.onfocus = function () {
         focussed = true;
         capture();
+        adjustAllVolume(1);
         $msg.select();
     }
 
     window.onblur = function() {
         focussed = false;
+        adjustAllVolume(0.2);
         capture();
     }
 

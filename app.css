@@ -191,6 +191,10 @@ body {
     font-size: 1em;
 }
 
+audio {
+    display: none;
+}
+
 .action, .bot {
   font-style: italic;
   color: gray;
