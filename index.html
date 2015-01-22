@@ -135,12 +135,6 @@
         }
     });
 
-    skylink.on('dataChannelState', function (state, peerId) {
-        if(state == skylink.DATA_CHANNEL_STATE.OPEN) {
-
-        }
-    });
-
     skylink.on('mediaAccessSuccess', function (stream) {
         attachMediaStream($video, stream);
         capture_timeout = setTimeout(capture, 2000);
@@ -151,12 +145,6 @@
 
     skylink.on('mediaAccessError', function (stream) {
         addMessage("Sorry, I can't let you in like this.", 'bot');
-    });
-
-    skylink.on('readyStateChange', function(state) {
-        if(state === 2) {
-
-        }
     });
 
     skylink.on('peerJoined', function (peerId, peerInfo, isSelf) {
