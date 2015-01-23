@@ -215,6 +215,7 @@ audio {
     font-size: .8em;
     font-weight: bold;
     padding-bottom: 0;
+    font-style: normal;
 }
 
 .action, .bot {
