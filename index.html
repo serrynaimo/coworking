@@ -73,12 +73,12 @@
             attachMediaStream($video, stream);
         }
         else {
-            var $audio = document.createElement('audio');
+            /*var $audio = document.createElement('audio');
             $audio.id = "audio_" + peerId;
             $audio.autoplay = true;
             $users.appendChild($audio);
-            attachMediaStream($$audio, stream);
-            peer_audios.push($audio);
+            attachMediaStream($audio, stream);
+            peer_audios.push($audio);*/
         }
     });
 
@@ -115,16 +115,17 @@
             console.log("Download completed from " + peerId);
             var $img = document.getElementById("img_" + peerId);
 
-            var data = URL.createObjectURL(transferInfo.data);
-            peer_pics[peerId] = data;
+            blob2dataURL(transferInfo.data, function(data) {
+                peer_pics[peerId] = data;
 
-            if(!$img) {
-                var info = skylink.getPeerInfo(peerId);
-                $img = addUserImage(peerId, info.userData.name);
-                addMessage(info.userData.name + ' is in the office', 'action', peerId, false);
-            }
+                if(!$img) {
+                    var info = skylink.getPeerInfo(peerId);
+                    $img = addUserImage(peerId, info.userData.name);
+                    addMessage(info.userData.name + ' is in the office', 'action', peerId, false);
+                }
 
-            $img.src = data;
+                $img.src = data;
+            });
         }
         else if(error && error.message) {
             console.log(error.message);
@@ -151,17 +152,6 @@
             skylink.setUserData(user);
             replay();
             addMessage('Welcome to the office, ' + user.name + '.', 'bot');
-            /*skylink.sendStream({
-                video: {
-                    resolution: {
-                        width: 160,
-                        height: 120
-                    }
-                },
-                audio: {
-                    stereo: false
-                }
-            });*/
         }
     });
 

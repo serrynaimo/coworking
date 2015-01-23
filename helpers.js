@@ -339,6 +339,15 @@ function dataURL2Blob(dataURL) {
     return new Blob([uInt8Array], {type: contentType});
 }
 
+function blob2dataURL(blob, callback) {
+  var fr = new FileReader();
+  fr.readAsDataURL(blob);
+  fr.onloadend = function() {
+    callback(fr.result);
+  }
+
+}
+
 
 /**
  * marked - a markdown parser
