@@ -121,7 +121,7 @@
                 if(!$img) {
                     var info = skylink.getPeerInfo(peerId);
                     $img = addUserImage(peerId, info.userData.name);
-                    addMessage('is in the office', 'action', peerId, false);
+                    addMessage('is in the office', 'action', peerId, false, info.userData.name);
                 }
 
                 $img.src = data;
@@ -167,7 +167,7 @@
             $users.removeChild($img);
             $users.removeChild($span);
             $users.removeChild($audio);
-            addMessage('left the office', 'action', peerId, false);
+            addMessage('left the office', 'action', peerId, false, peerInfo.userData.name);
         }
     });
 
@@ -217,7 +217,7 @@
         return $img;
     }
 
-    function addMessage(message, className, peerId, isSelf) {
+    function addMessage(message, className, peerId, isSelf, name) {
         var id = (new Date()).getTime();
         var $div = document.createElement('div');
         $div.className = className + (isSelf ? 'isself': '');
@@ -237,7 +237,7 @@
 
         var $span_name = document.createElement('span');
         $span_name.className = "name";
-        $span_name.textContent = className === 'bot' ? "Bot" : skylink.getPeerInfo(peerId).userData.name;
+        $span_name.textContent = className === 'bot' ? "Bot" : (name ? name : skylink.getPeerInfo(peerId).userData.name);
         $div.appendChild($span_name);
 
         var $span = document.createElement('span');
