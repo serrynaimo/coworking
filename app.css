@@ -154,7 +154,7 @@ body {
 }
 
 #chatbox > div {
-    margin-bottom: 0;
+    margin-bottom: 7px;
     min-height: 45px;
     width: 100%;
 }
