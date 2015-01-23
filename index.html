@@ -121,7 +121,7 @@
                 if(!$img) {
                     var info = skylink.getPeerInfo(peerId);
                     $img = addUserImage(peerId, info.userData.name);
-                    addMessage(info.userData.name + ' is in the office', 'action', peerId, false);
+                    addMessage('is in the office', 'action', peerId, false);
                 }
 
                 $img.src = data;
@@ -167,13 +167,13 @@
             $users.removeChild($img);
             $users.removeChild($span);
             $users.removeChild($audio);
-            addMessage(peerInfo.userData.name + ' left the office', 'action', peerId, false);
+            addMessage('left the office', 'action', peerId, false);
         }
     });
 
     skylink.init({
-        //apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
-        apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
+        apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
+        //apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
         defaultRoom: 'office'
     }, function() {
         skylink.getUserMedia({
@@ -234,6 +234,11 @@
         if($img.src) {
             $div.appendChild($img);
         }
+
+        var $span_name = document.createElement('span');
+        $span_name.className = "name";
+        $span_name.textContent = className === 'bot' ? "Bot" : skylink.getPeerInfo(peerId).userData.name;
+        $div.appendChild($span_name);
 
         var $span = document.createElement('span');
         if(className === 'action') {

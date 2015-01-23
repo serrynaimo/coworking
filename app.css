@@ -158,19 +158,27 @@ body {
     float: left;
     width: 60px;
     height: 45px;
+    margin-left: 10px;
     vertical-align: top;
+    border-radius: 2px;
 }
 
 #chatbox > div > span {
     display: block;
-    margin-left: 60px;
+    margin-left: 70px;
     padding: 5px 10px;
     overflow: hidden;
     position: relative;
+    font-weight: 200;
+    line-height: 1.3em;
 }
 
 #chatbox > div > span > *:first-child {
     margin-top: 0;
+}
+
+#chatbox > div > span > *:last-child {
+    margin-bottom: 0;
 }
 
 #controls {
@@ -179,6 +187,7 @@ body {
 
 #msg {
     position: absolute;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     height: 19px;
     bottom: 0;
     border: 0;
@@ -189,10 +198,18 @@ body {
     background: #fff;
     outline: 0;
     font-size: 1em;
+    font-weight: 200;
 }
 
 audio {
     display: none;
+}
+
+#chatbox > div > span.name {
+    color: #000;
+    font-size: .8em;
+    font-weight: bold;
+    padding-bottom: 0;
 }
 
 .action, .bot {
