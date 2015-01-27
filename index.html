@@ -328,7 +328,7 @@
                     $chatbox.innerHTML = '';
                 }
                 else if($msg.value.substr(0,5) === '/join') {
-                    window.open(location.origin + '#' + $msg.value.substr(6), $msg.value.substr(6));
+                    window.open(location.origin + location.pathname + '#' + $msg.value.substr(6), $msg.value.substr(6));
                 }
                 else {
                     skylink.sendP2PMessage($msg.value);
