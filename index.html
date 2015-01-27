@@ -59,7 +59,8 @@
         peer_audios = [],
         audioTimeouts = [],
         last_pic = null,
-        capture_timeout = null;
+        capture_timeout = null,
+        click_timeout = null;
 
     var online = false,
         focussed = true,
@@ -207,14 +208,23 @@
         $span.textContent = name;
 
         $span.onclick = function() {
-            skylink.sendMessage('/hail ' + peerId, peerId);
-            $img.className = "hailing";
-            setTimeout(function () {
-               $img.className = "";
-            }, 5000);
-            console.log("Hailing " + peerId);
+            clearTimeout(click_timeout);
+
+            var hail = function() {
+                skylink.sendMessage('/hail ' + peerId, peerId);
+                $img.className = "hailing";
+                setTimeout(function () {
+                   $img.className = "";
+                }, 5000);
+                console.log("Hailing " + peerId);
+            }
+
+            click_timeout = setTimeout(hail, 400);
+            return false
         }
         $span.ondblclick = function () {
+            clearTimeout(click_timeout);
+
             skylink.sendMessage('/getaroom ' + peerId, peerId);
             console.log("Get a room invite to " + peerId);
             return false;
