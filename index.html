@@ -88,19 +88,22 @@
     skylink.on('incomingMessage', function (message, peerId, peerInfo, isSelf) {
         if(message.content.substr(0,1) === '/') {
             var msg = message.content.substr(1);
-            if(msg === 'hail') {
+            if(msg.substr(0,4) === 'hail') {
                 $alert.play();
                 var $img = document.getElementById("img_" + peerId);
                 $img.className = "hailing";
                 setTimeout(function () {
                    $img.className = "";
                 }, 5000);
+
+                var roomPeerId = msg.substr(6);
+                addMessage(isSelf ? 'You hailed ' + skylink.getPeerInfo(roomPeerId).userData.name : peerInfo.userData.name ' hailed you', 'action', isSelf ? roomPeerId : peerId);
             }
             else if(msg.substr(0,8) === 'getaroom') {
                 var roomPeerId = msg.substr(9);
                 var name = isSelf ? skylink.getPeerInfo(roomPeerId).userData.name : peerInfo.userData.name;
 
-                addMessage('<a href="http://getaroom.io/' + roomPeerId + '" target="_blank">Get a meeting room with ' + name + '</a>',
+                addMessage('<a href="http://getaroom.io/' + roomPeerId + '" target="_blank">Get an audio/video meeting room with ' + name + '</a>',
                     'action', isSelf ? roomPeerId : peerId);
             }
         }
@@ -204,7 +207,7 @@
         $span.textContent = name;
 
         $span.onclick = function() {
-            skylink.sendMessage('/hail', peerId);
+            skylink.sendMessage('/hail ' + peerId, peerId);
             $img.className = "hailing";
             setTimeout(function () {
                $img.className = "";
