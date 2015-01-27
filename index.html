@@ -97,7 +97,7 @@
                 }, 5000);
 
                 var roomPeerId = msg.substr(6);
-                addMessage(isSelf ? 'You hailed ' + skylink.getPeerInfo(roomPeerId).userData.name : peerInfo.userData.name ' hailed you', 'action', isSelf ? roomPeerId : peerId);
+                addMessage(isSelf ? 'You hailed ' + skylink.getPeerInfo(roomPeerId).userData.name : peerInfo.userData.name + ' hailed you', 'action', isSelf ? roomPeerId : peerId);
             }
             else if(msg.substr(0,8) === 'getaroom') {
                 var roomPeerId = msg.substr(9);
