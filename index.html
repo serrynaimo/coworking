@@ -65,6 +65,8 @@
         focussed = true,
         mediaOK = false;
 
+    var room = location.hash.length > 1 ? location.hash : 'the public hallway';
+
     skylink.setLogLevel(skylink.LOG_LEVEL.DEBUG);
     skylink.setDebugMode(true);
 
@@ -121,7 +123,7 @@
                 if(!$img) {
                     var info = skylink.getPeerInfo(peerId);
                     $img = addUserImage(peerId, info.userData.name);
-                    addMessage('is in the office', 'action', peerId, false);
+                    addMessage('is in ' + room, 'action', peerId, false);
                 }
 
                 $img.src = data;
@@ -151,7 +153,7 @@
             online = true;
             skylink.setUserData(user);
             replay();
-            addMessage('Welcome to the office, ' + user.name + '.', 'bot');
+            addMessage('Welcome to ' + room + ', ' + user.name + '.', 'bot');
         }
     });
 
@@ -167,14 +169,15 @@
             $users.removeChild($img);
             $users.removeChild($span);
             //$users.removeChild($audio);
-            addMessage('left the office', 'action', peerId, false);
+            addMessage('left ' + room, 'action', peerId, false);
         }
+
     });
 
     skylink.init({
         //apiKey: '48f72309-6dd1-47bb-9dd2-aa43f4a6a14a',
         apiKey: '774b477f-dc20-4374-ba13-3eda09414c28',
-        defaultRoom: 'office'
+        defaultRoom: location.hash.substr(1);
     }, function() {
         skylink.getUserMedia({
             video: {
@@ -323,6 +326,9 @@
                 if($msg.value === '/clear') {
                     localStorage.clear();
                     $chatbox.innerHTML = '';
+                }
+                else if($msg.value.substr(0,5) === '/join') {
+                    window.open(location.origin + '#' + $msg.value.substr(6), $msg.value.substr(6));
                 }
                 else {
                     skylink.sendP2PMessage($msg.value);
