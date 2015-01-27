@@ -89,7 +89,7 @@
     skylink.on('incomingMessage', function (message, peerId, peerInfo, isSelf) {
         if(message.content.substr(0,1) === '/') {
             var msg = message.content.substr(1);
-            if(msg.substr(0,4) === 'hail') {
+            if(msg === 'hail') {
                 $alert.play();
                 var $img = document.getElementById("img_" + peerId);
                 $img.className = "hailing";
@@ -97,8 +97,9 @@
                    $img.className = "";
                 }, 5000);
 
-                var roomPeerId = msg.substr(6);
-                addMessage(isSelf ? 'You hailed ' + skylink.getPeerInfo(roomPeerId).userData.name : 'hailed you', 'action', isSelf ? roomPeerId : peerId);
+                if(isSelf) {
+                    addMessage('hailed you', 'action', peerId);
+                }
             }
             else if(msg.substr(0,8) === 'getaroom') {
                 var roomPeerId = msg.substr(9);
@@ -211,7 +212,7 @@
             clearTimeout(click_timeout);
 
             var hail = function() {
-                skylink.sendMessage('/hail ' + peerId, peerId);
+                skylink.sendMessage('/hail', peerId);
                 $img.className = "hailing";
                 setTimeout(function () {
                    $img.className = "";
