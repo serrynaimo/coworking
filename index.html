@@ -265,7 +265,7 @@
     function replay() {
         for(var i = 0, len = localStorage.length; i < len; i++) {
             var key = localStorage.key(i).split('_');
-            if(key[0] === hash && key[1] > (new Date()).getTime() - 1000 * 60 * 60 * 24 * 5) {
+            if(key.length === 2 && key[0] === hash && key[1] > (new Date()).getTime() - 1000 * 60 * 60 * 24 * 5) {
                 var $div = document.createElement('div');
                 $div.innerHTML = localStorage[key];
                 $chatbox.appendChild($div.children[0]);
