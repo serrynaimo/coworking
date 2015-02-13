@@ -296,6 +296,10 @@
     }
 
     function capture() {
+        if(mediaOK !== true) {
+            return;
+        }
+
         clearTimeout(capture_timeout);
 
         var ctx = $photo.getContext("2d");
