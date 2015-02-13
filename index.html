@@ -125,13 +125,6 @@
 
             blob2dataURL(transferInfo.data, function(data) {
                 peer_pics[peerId] = data;
-
-                if(!$img) {
-                    var info = skylink.getPeerInfo(peerId);
-                    $img = addUserImage(peerId, info.userData.name);
-                    addMessage('is in ' + room, 'action', peerId, false);
-                }
-
                 $img.src = data;
             });
         }
@@ -160,6 +153,12 @@
             skylink.setUserData(user);
             replay();
             addMessage('Welcome to ' + room + ', ' + user.name + '.', 'bot');
+        }
+        else {
+            var info = skylink.getPeerInfo(peerId);
+            var $img = addUserImage(peerId, info.userData.name);
+            $img.src = "http://robohash.org/" + peerId;
+            addMessage('is in ' + room, 'action', peerId, false);
         }
     });
 
