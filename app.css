@@ -127,7 +127,7 @@ body {
     }
 }
 
-#users > #myvideo {
+#users > #myvideo, #users > #mypic {
     display: none;
 }
 
