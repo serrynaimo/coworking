@@ -157,7 +157,7 @@
         else {
             var info = skylink.getPeerInfo(peerId);
             var $img = addUserImage(peerId, info.userData.name);
-            $img.src = "http://robohash.org/" + peerId;
+            $img.src = peer_pics[peerId] = "http://robohash.org/" + peerId;
             addMessage('is in ' + room, 'action', peerId, false);
         }
     });
