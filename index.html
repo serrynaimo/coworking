@@ -156,7 +156,7 @@
             replay();
             if(mediaOK === false) {
                 $pic.src = last_pic = "http://robohash.org/" + peerId;
-                $pic.style.display = "block";
+                $pic.style.display = "inline";
             }
             addMessage('Welcome to ' + room + ', ' + user.name + '.', 'bot');
         }
@@ -312,7 +312,7 @@
         last_pic = $photo.toDataURL('image/jpeg', 0.8);
 
         $pic.src = last_pic;
-        $pic.style.display = "block";
+        $pic.style.display = "inline";
 
         var blob = dataURL2Blob(last_pic);
 
