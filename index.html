@@ -64,7 +64,7 @@
 
     var online = false,
         focussed = true,
-        mediaOK = false;
+        mediaOK = null;
 
     var hash = location.hash.substr(1).replace('_','-'),
         room = location.hash.length > 1 ? location.hash : 'the public hallway';
@@ -144,7 +144,9 @@
     });
 
     skylink.on('mediaAccessError', function (stream) {
-        addMessage("Sorry, I can't let you in like this.", 'bot');
+        addMessage("If you don't want to share your camera, I'll make you a bot like me. Can I have your name tho?", 'bot');
+        $msg.select();
+        mediaOK = false;
     });
 
     skylink.on('peerJoined', function (peerId, peerInfo, isSelf) {
@@ -152,6 +154,9 @@
             online = true;
             skylink.setUserData(user);
             replay();
+            if(mediaOK === false) {
+                $pic.src = "http://robohash.org" + peerId;
+            }
             addMessage('Welcome to ' + room + ', ' + user.name + '.', 'bot');
         }
         else {
@@ -337,7 +342,7 @@
     }
 
     $msg.onkeydown = function(e) {
-        if(!e.altKey && e.keyCode === 13 && mediaOK) {
+        if(!e.altKey && e.keyCode === 13 && mediaOK !== null) {
             if(online) {
                 if($msg.value === '/clear') {
                     localStorage.clear();
