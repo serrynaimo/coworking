@@ -77,12 +77,12 @@
             attachMediaStream($video, stream);
         }
         else {
-            /*var $audio = document.createElement('audio');
+            var $audio = document.createElement('audio');
             $audio.id = "audio_" + peerId;
             $audio.autoplay = true;
             $users.appendChild($audio);
             attachMediaStream($audio, stream);
-            peer_audios.push($audio);*/
+            peer_audios.push($audio);
         }
     });
 
@@ -176,10 +176,10 @@
         else {
             var $img = document.getElementById("img_" + peerId);
             var $span = document.getElementById("span_" + peerId);
-            //var $audio = document.getElementById("audio_" + peerId);
+            var $audio = document.getElementById("audio_" + peerId);
             $users.removeChild($img);
             $users.removeChild($span);
-            //$users.removeChild($audio);
+            $users.removeChild($audio);
             addMessage('left ' + room, 'action', peerId, false);
         }
 
@@ -380,13 +380,13 @@
     window.onfocus = function () {
         focussed = true;
         capture();
-        adjustAllVolume(1);
+        //adjustAllVolume(1);
         $msg.select();
     }
 
     window.onblur = function() {
         focussed = false;
-        adjustAllVolume(0.2);
+        //adjustAllVolume(0.2);
         capture();
     }
 
