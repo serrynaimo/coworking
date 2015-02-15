@@ -1621,3 +1621,31 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }).call(function() {
   return this || (typeof window !== 'undefined' ? window : global);
 }());
+
+
+/**
+  * Grascale
+  */
+  
+function convertToGrayscale(context, top_x, top_y, width, height){
+        //here we are creating a imagedata array same size of the argument array.
+	var nimg = context.getImageData( top_x, top_y, width, height );
+        //this is just a variable for using in iteration through arrya.
+	var n=0;
+	while(n<data.width*data.height)
+	{
+                /*for each pixel we have 4 values 
+                  which are r,g,b channels and transparency.
+                  that is why we are multiplying n by 4 each time,
+                  to pass by the previous pixel and then go to next pixel.                       */
+		var idx = n * 4;
+		var r = data.data[idx];
+		var g = data.data[idx+1];
+		var b = data.data[idx+2];	
+		nimg.data[idx] = nimg.data[idx+1] = nimg.data[idx+2] = .299 * r + .587 * g + .114 * b;
+		nimg.data[idx+3] = 255;
+		n++;
+	}
+    context.putImageData( nimg, top_x, top_y );
+}
+

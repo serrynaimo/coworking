@@ -60,11 +60,11 @@
         audioTimeouts = [],
         last_pic = null,
         capture_timeout = null,
-        click_timeout = null;
-
-    var online = false,
+        click_timeout = null,
+        online = false,
         focussed = true,
-        mediaOK = null;
+        mediaOK = null,
+        muted = false;
 
     var hash = location.hash.substr(1).replace('_','-'),
         room = location.hash.length > 1 ? location.hash : 'the public hallway';
@@ -306,6 +306,10 @@
         if(!focussed) {
             stackBlurCanvasRGB(ctx, 0, 0, 160, 120, 35);
         }
+        
+        if(muted) {
+            convertToGrayscale(ctx, 0, 0, 160, 120,)
+        }
 
         last_pic = $photo.toDataURL('image/jpeg', 0.8);
 
@@ -355,6 +359,16 @@
                 else if($msg.value.substr(0,6) === '/join ') {
                     window.open(location.origin + location.pathname + '#' + $msg.value.substr(6), $msg.value.substr(6));
                 }
+                else if($msg.value === '/mute') {
+                    skylink.muteStream({audioMuted: true});
+                    muted = true;
+                    capture();
+                }
+                else if($msg.value === '/unmute') {
+                    skylink.muteStream({audioMuted: false});                    
+                    muted = false;
+                    capture();
+                }
                 //else if($msg.value.substr(0,7) === '/share ') {
                 //    skylink.sendP2PMessage("![powered by LoremFlickr](http://loremflickr.com/320/240/" + encodeURIComponent($msg.value.substr(7)) + ")");
                 //}
@@ -386,7 +400,7 @@
 
     window.onblur = function() {
         focussed = false;
-        adjustAllVolume(0.2);
+        adjustAllVolume(0.15);
         capture();
     }
 
