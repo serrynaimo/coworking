@@ -1660,7 +1660,7 @@ function getPicture(tags, cb) {
             var data = JSON.parse(xhr.responseText.substring(14,xhr.responseText.length - 1));
             if (data.stat == 'ok') {
                 // get a random id from the array
-                if(data.photos.photo.length) {
+                if(!data.photos.photo.length) {
                     cb("We couldn't find a photo for this. Seperate keywords with comma.");
                 }
                 else {
