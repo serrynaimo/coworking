@@ -370,9 +370,12 @@
                     muted = false;
                     capture();
                 }
-                //else if($msg.value.substr(0,7) === '/share ') {
-                //    skylink.sendP2PMessage("![powered by LoremFlickr](http://loremflickr.com/320/240/" + encodeURIComponent($msg.value.substr(7)) + ")");
-                //}
+                else if($msg.value.substr(0,7) === '/share ') {
+                    getPicture(encodeURIComponent($msg.value.substr(7)), function(url) {
+                        skylink.sendP2PMessage("![powered by Flickr](url)");
+                                            
+                    });
+                }
                 else {
                     skylink.sendP2PMessage($msg.value);
                 }
