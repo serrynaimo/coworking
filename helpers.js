@@ -1657,7 +1657,7 @@ function getPicture(tags, cb) {
         xhr1 = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            var data = JSON.parse(xhr.responseText.substring(14,xhr.responseText.length - 2);
+            var data = JSON.parse(xhr.responseText.substring(14,xhr.responseText.length - 2));
             if (data.stat == 'ok') {
                 // get a random id from the array
                 var photo = data.photos.photo[Math.floor(Math.random() * data.photos.photo.length)];
