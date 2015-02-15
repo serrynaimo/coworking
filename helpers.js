@@ -1631,20 +1631,17 @@ function convertToGrayscale(context, top_x, top_y, width, height){
         //here we are creating a imagedata array same size of the argument array.
 	var nimg = context.getImageData( top_x, top_y, width, height );
 
-    var data = nimg.data;
+    var d = nimg.data;
 
-    var p1 = 0.99;
-    var p2 = 0.99;
-    var p3 = 0.99;
-    var er = 0.2126; // extra red
-    var eg = 0.7152; // extra green
-    var eb = 0.0722; // extra blue
-    for (var i = 0, n = data.length; i < n; i += 4) {
-        var grayscale = data[i] * p1 + data[i + 1] * p2 + data[i + 2] * p3;
-        data[i] = grayscale + er; // red
-        data[i + 1] = grayscale + eg; // green
-        data[i + 2] = grayscale + eb; // blue
-    }
+    for (var i=0; i<d.length; i+=4) {
+        var r = d[i];
+        var g = d[i+1];
+        var b = d[i+2];
+        // CIE luminance for the RGB
+        // The human eye is bad at seeing red and blue, so we de-emphasize them.
+        var v = 0.2126*r + 0.7152*g + 0.0722*b;
+        d[i] = d[i+1] = d[i+2] = v
+      }
 
     context.putImageData( nimg, top_x, top_y );
 }
