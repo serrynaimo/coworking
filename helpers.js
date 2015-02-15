@@ -1631,7 +1631,7 @@ function convertToGrayscale(context, top_x, top_y, width, height){
         //here we are creating a imagedata array same size of the argument array.
 	var nimg = context.getImageData( top_x, top_y, width, height );
 
-    var data = imageData.data;
+    var data = nimg.data;
 
     var p1 = 0.99;
     var p2 = 0.99;
