@@ -1630,22 +1630,22 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 function convertToGrayscale(context, top_x, top_y, width, height){
         //here we are creating a imagedata array same size of the argument array.
 	var nimg = context.getImageData( top_x, top_y, width, height );
-        //this is just a variable for using in iteration through arrya.
-	var n=0;
-	while(n<data.width*data.height)
-	{
-                /*for each pixel we have 4 values 
-                  which are r,g,b channels and transparency.
-                  that is why we are multiplying n by 4 each time,
-                  to pass by the previous pixel and then go to next pixel.                       */
-		var idx = n * 4;
-		var r = data.data[idx];
-		var g = data.data[idx+1];
-		var b = data.data[idx+2];	
-		nimg.data[idx] = nimg.data[idx+1] = nimg.data[idx+2] = .299 * r + .587 * g + .114 * b;
-		nimg.data[idx+3] = 255;
-		n++;
-	}
+
+    var data = imageData.data;
+
+    var p1 = 0.99;
+    var p2 = 0.99;
+    var p3 = 0.99;
+    var er = 0; // extra red
+    var eg = 0; // extra green
+    var eb = 0; // extra blue
+    for (var i = 0, n = data.length; i < n; i += 4) {
+        var grayscale = data[i] * p1 + data[i + 1] * p2 + data[i + 2] * p3;
+        data[i] = grayscale + er; // red
+        data[i + 1] = grayscale + eg; // green
+        data[i + 2] = grayscale + eb; // blue
+    }
+
     context.putImageData( nimg, top_x, top_y );
 }
 
