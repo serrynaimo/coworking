@@ -1636,9 +1636,9 @@ function convertToGrayscale(context, top_x, top_y, width, height){
     var p1 = 0.99;
     var p2 = 0.99;
     var p3 = 0.99;
-    var er = 0; // extra red
-    var eg = 0; // extra green
-    var eb = 0; // extra blue
+    var er = 0.2126; // extra red
+    var eg = 0.7152; // extra green
+    var eb = 0.0722; // extra blue
     for (var i = 0, n = data.length; i < n; i += 4) {
         var grayscale = data[i] * p1 + data[i + 1] * p2 + data[i + 2] * p3;
         data[i] = grayscale + er; // red
