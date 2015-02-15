@@ -327,7 +327,7 @@
         capture_timeout = setTimeout(capture, 5000);
     }
 
-    function adjustVolume($audio, to) {
+    /*function adjustVolume($audio, to) {
         if(!$audio) {
             return;
         }
@@ -341,12 +341,12 @@
                 adjustVolume($audio, to);
             }, 50);
         }
-    }
+    }*/
 
     function adjustAllVolume(to) {
         for(i in peer_audios) {
-            //peer_audios[i].volume = to;
-            adjustVolume(peer_audios[i], to);
+            peer_audios[i].volume = to;
+            //adjustVolume(peer_audios[i], to);
         }
     }
 
