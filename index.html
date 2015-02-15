@@ -80,6 +80,7 @@
             var $audio = document.createElement('audio');
             $audio.id = "audio_" + peerId;
             $audio.autoplay = true;
+            $audio.volume = focussed ? 1 : 0.15;
             $users.appendChild($audio);
             attachMediaStream($audio, stream);
             peer_audios.push($audio);
