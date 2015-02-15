@@ -1660,24 +1660,29 @@ function getPicture(tags, cb) {
             var data = JSON.parse(xhr.responseText.substring(14,xhr.responseText.length - 1));
             if (data.stat == 'ok') {
                 // get a random id from the array
-                var photo = data.photos.photo[Math.floor(Math.random() * data.photos.photo.length)];
-
-                // now call the flickr API and get the picture with a nice size
-                xhr1.onreadystatechange = function() {
-                    if (xhr1.readyState == 4) {
-                        var response = JSON.parse(xhr1.responseText.substring(14,xhr1.responseText.length - 1));
-                        if (response.stat == 'ok') {
-                            var the_url = response.sizes.size[5].source;
-                            cb(the_url);
-                        } else {
-                            console.log(" The request to get the picture was not good :\ ")
+                if(data.photos.photo.length) {
+                    cb("We couldn't find a photo for this. Seperate keywords with comma.");
+                }
+                else {
+                    var photo = data.photos.photo[Math.floor(Math.random() * data.photos.photo.length)];
+    
+                    // now call the flickr API and get the picture with a nice size
+                    xhr1.onreadystatechange = function() {
+                        if (xhr1.readyState == 4) {
+                            var response = JSON.parse(xhr1.responseText.substring(14,xhr1.responseText.length - 1));
+                            if (response.stat == 'ok') {
+                                var the_url = response.sizes.size[5].source;
+                                cb(null, the_url);
+                            } else {
+                                 cb("This didn't work out. Try other keywords.");
+                            }
                         }
                     }
+                    xhr1.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&photo_id=' + photo.id + '&api_key=' + apiKey + '&format=json', true);
+                    xhr1.send(null);
                 }
-                xhr1.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&photo_id=' + photo.id + '&api_key=' + apiKey + '&format=json', true);
-                xhr1.send(null);
             } else {
-                console.log(" The request to get the array was not good :( ");
+                cb("Flickr seems down?!");
             }
         }
     }
