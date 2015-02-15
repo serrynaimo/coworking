@@ -372,7 +372,7 @@
                 }
                 else if($msg.value.substr(0,7) === '/share ') {
                     getPicture(encodeURIComponent($msg.value.substr(7)), function(url) {
-                        skylink.sendP2PMessage("![powered by Flickr](url)");
+                        skylink.sendP2PMessage("![powered by Flickr](" + url + ")");
                                             
                     });
                 }
