@@ -1653,7 +1653,8 @@ function convertToGrayscale(context, top_x, top_y, width, height){
 function getPicture(tags, cb) {
     var apiKey = "fa214b1215cd1a537018cfbdfa7fb9a6"; // replace this with your API key
 
-    var xhr, xhr1 = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest(),
+        xhr1 = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
             var data = JSON.parse(xhr.responseText);
