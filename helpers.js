@@ -1661,7 +1661,7 @@ function getPicture(tags, cb) {
             if (data.stat == 'ok') {
                 // get a random id from the array
                 if(!data.photos.photo.length) {
-                    cb("We couldn't find a photo for this. Seperate keywords with comma.");
+                    cb("We couldn't find a photo for this. Seperate keywords with commas.");
                 }
                 else {
                     var photo = data.photos.photo[Math.floor(Math.random() * data.photos.photo.length)];
