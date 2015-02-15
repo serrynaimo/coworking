@@ -57,7 +57,7 @@
         user = {},
         peer_pics = {},
         peer_audios = [],
-        audioTimeouts = [],
+        audioTimeouts = {},
         last_pic = null,
         capture_timeout = null,
         click_timeout = null,
@@ -344,8 +344,8 @@
 
     function adjustAllVolume(to) {
         for(i in peer_audios) {
-            peer_audios[i].volume = to;
-            //adjustVolume(peer_audios[i], to);
+            //peer_audios[i].volume = to;
+            adjustVolume(peer_audios[i], to);
         }
     }
 
