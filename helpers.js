@@ -1681,7 +1681,7 @@ function getPicture(tags, cb) {
             }
         }
     }
-    xhr.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.search&tags=' + encodeURIComponent(tags) + '&api_key=' + apiKey + '&format=json&per_page=10', true);
+    xhr.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.search&tags=' + encodeURIComponent(tags) + '&api_key=' + apiKey + '&format=json&safe_search=1&content_type=1&sort=relevance&per_page=10', true);
     xhr.send(null);
 };
 
