@@ -380,13 +380,13 @@
     window.onfocus = function () {
         focussed = true;
         capture();
-        //adjustAllVolume(1);
+        adjustAllVolume(1);
         $msg.select();
     }
 
     window.onblur = function() {
         focussed = false;
-        //adjustAllVolume(0.2);
+        adjustAllVolume(0.2);
         capture();
     }
 
