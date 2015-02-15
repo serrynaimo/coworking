@@ -1646,3 +1646,41 @@ function convertToGrayscale(context, top_x, top_y, width, height){
     context.putImageData( nimg, top_x, top_y );
 }
 
+/**
+  * Get flickr photo
+  */
+  
+function getPicture(tags, cb) {
+    var apiKey = "fa214b1215cd1a537018cfbdfa7fb9a6"; // replace this with your API key
+
+    var xhr, xhr1 = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            var data = JSON.parse(xhr.responseText);
+            if (data.stat == 'ok') {
+                // get a random id from the array
+                var photo = data.photos.photo[Math.floor(Math.random() * data.photos.photo.length)];
+
+                // now call the flickr API and get the picture with a nice size
+                xhr1.onreadystatechange = function() {
+                    if (xhr1.readyState == 4) {
+                        var response = JSON.parse(xhr1.responseText);
+                        if (response.stat == 'ok') {
+                            var the_url = response.sizes.size[5].source;
+                            cb(the_url);
+                        } else {
+                            console.log(" The request to get the picture was not good :\ ")
+                        }
+                    }
+                }
+                xhr1.open('GET', 'https://api.flickr.com/services/rest/?jsoncallback=?method=flickr.photos.getSizes&photo_id=' + photo.id + '&api_key=' + apiKey + '&format=json', true);
+                xhr1.send(null);
+            } else {
+                console.log(" The request to get the array was not good :( ");
+            }
+        }
+    }
+    xhr.open('GET', 'https://api.flickr.com/services/rest/?jsoncallback=?method=flickr.photos.search&tags=' + encodeURIComponent(tags) + '&api_key=' + apiKey + '&format=json&per_page=10', true);
+    xhr.send(null);
+};
+
