@@ -1657,7 +1657,7 @@ function getPicture(tags, cb) {
         xhr1 = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            var data = JSON.parse(xhr.responseText);
+            var data = JSON.parse(xhr.responseText.substring(14,xhr.responseText.length - 2);
             if (data.stat == 'ok') {
                 // get a random id from the array
                 var photo = data.photos.photo[Math.floor(Math.random() * data.photos.photo.length)];
@@ -1665,7 +1665,7 @@ function getPicture(tags, cb) {
                 // now call the flickr API and get the picture with a nice size
                 xhr1.onreadystatechange = function() {
                     if (xhr1.readyState == 4) {
-                        var response = JSON.parse(xhr1.responseText);
+                        var response = JSON.parse(xhr1.responseText.substring(14,xhr1.responseText.length - 2));
                         if (response.stat == 'ok') {
                             var the_url = response.sizes.size[5].source;
                             cb(the_url);
