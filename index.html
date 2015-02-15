@@ -64,9 +64,8 @@
         online = false,
         focussed = true,
         mediaOK = null,
-        muted = false;
-
-    var hash = location.hash.substr(1).replace('_','-'),
+        muted = false,
+        hash = location.hash.substr(1).replace('_','-'),
         room = location.hash.length > 1 ? location.hash : 'the public hallway';
 
     skylink.setLogLevel(skylink.LOG_LEVEL.DEBUG);
