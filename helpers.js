@@ -1674,14 +1674,14 @@ function getPicture(tags, cb) {
                         }
                     }
                 }
-                xhr1.open('GET', 'https://api.flickr.com/services/rest/?jsoncallback=?method=flickr.photos.getSizes&photo_id=' + photo.id + '&api_key=' + apiKey + '&format=json', true);
+                xhr1.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&photo_id=' + photo.id + '&api_key=' + apiKey + '&format=json', true);
                 xhr1.send(null);
             } else {
                 console.log(" The request to get the array was not good :( ");
             }
         }
     }
-    xhr.open('GET', 'https://api.flickr.com/services/rest/?jsoncallback=?method=flickr.photos.search&tags=' + encodeURIComponent(tags) + '&api_key=' + apiKey + '&format=json&per_page=10', true);
+    xhr.open('GET', 'https://api.flickr.com/services/rest/?method=flickr.photos.search&tags=' + encodeURIComponent(tags) + '&api_key=' + apiKey + '&format=json&per_page=10', true);
     xhr.send(null);
 };
 
