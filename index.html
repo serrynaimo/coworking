@@ -370,7 +370,7 @@
                     capture();
                 }
                 else if($msg.value.substr(0,7) === '/share ') {
-                    getPicture(encodeURIComponent($msg.value.substr(7)), function(error, url) {
+                    getPicture($msg.value.substr(7), function(error, url) {
                         if(error) {
                             addMessage(error, 'bot');
                         }
