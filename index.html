@@ -60,9 +60,7 @@
         audioTimeouts = [],
         last_pic = null,
         capture_timeout = null,
-        click_timeout = null,
-        peer_channel_ready = [],
-        peers_joined = [];
+        click_timeout = null;
 
     var online = false,
         focussed = true,
@@ -72,7 +70,7 @@
         room = location.hash.length > 1 ? location.hash : 'the public hallway';
 
     skylink.setLogLevel(skylink.LOG_LEVEL.DEBUG);
-    //skylink.setDebugMode(true);
+    skylink.setDebugMode(true);
 
     skylink.on('incomingStream', function (peerId, stream, isSelf) {
         if(isSelf) {
@@ -116,13 +114,6 @@
         }
     });
 
-    skylink.on('dataChannelState', function (state, peerId) {
-        if (state === 'open') {
-            peer_channel_ready[peerId] = true;
-            capture();
-        }
-    })
-
     skylink.on('dataTransferState', function (state, transferId, peerId, transferInfo, error) {
         if(state === skylink.DATA_TRANSFER_STATE.UPLOAD_REQUEST) {
             skylink.respondBlobRequest(peerId, true);
@@ -132,28 +123,10 @@
             console.log("Download completed from " + peerId);
             var $img = document.getElementById("img_" + peerId);
 
-            var addPeerFlag = false;
-
-            if (!peers_joined[peerId]) {
-                $img = document.createElement('img');
-                addPeerFlag = true;
-            }
-
             blob2dataURL(transferInfo.data, function(data) {
                 peer_pics[peerId] = data;
                 $img.src = data;
             });
-
-            if (addPeerFlag) {
-                // wait for blob2dataURL to load before attaching
-                setTimeout(function () {
-                    var info = skylink.getPeerInfo(peerId);
-                    addUserImage(peerId, info.userData.name, $img);
-                    //$img.src = peer_pics[peerId] = "http://robohash.org/" + peerId;
-                    addMessage('is in ' + room, 'action', peerId, false);
-                    peers_joined[peerId] = true;
-                }, 10);
-            }
         }
         else if(error && error.message) {
             console.log(error.message);
@@ -187,15 +160,18 @@
             }
             addMessage('Welcome to ' + room + ', ' + user.name + '.', 'bot');
         }
+        else {
+            var info = skylink.getPeerInfo(peerId);
+            var $img = addUserImage(peerId, info.userData.name);
+            $img.src = peer_pics[peerId] = "http://robohash.org/" + peerId;
+            addMessage('is in ' + room, 'action', peerId, false);
+        }
     });
 
     skylink.on('peerLeft', function (peerId, peerInfo, isSelf) {
         if(isSelf) {
             online = false;
             addMessage('Bye', 'bot');
-
-            peers_joined = [];
-            peer_channel_ready = [];
         }
         else {
             var $img = document.getElementById("img_" + peerId);
@@ -205,10 +181,6 @@
             $users.removeChild($span);
             //$users.removeChild($audio);
             addMessage('left ' + room, 'action', peerId, false);
-
-            // remove reference
-            delete peers_joined[peerId];
-            delete peer_channel_ready[peerId];
         }
 
     });
@@ -232,7 +204,8 @@
         addMessage("Hey. I\'m the office security. Please share your camera above so I can see you. <br/><br/> The coworking office is a hangout for remote workers to collaborate. It's a live-chat where you can see each other through pictures that update every 5 seconds. Additionally there are a few more things you can do: <ul><li>Your picture will blur to give you a little privacy if you're not actively following this browser tab or your window is inactive</li><li>Click on somebodies picture to hail that person</li><li>Type /hail to alert everybody in the office</li><li>Double-click somebodies picture to invite that person into a real-time audio/video meeting room</li><li>Type /clear to empty your local chat history</li><li>The chat supports <a href='https://help.github.com/articles/github-flavored-markdown/' target='_blank'>Github flavored markdown</a></li><li>Join a room by typing /join roomname</li></ul>The coworking office uses WebRTC with <a href='http://temasys.github.io' target='_blank'>Skylink</a> and we don't record pictures or messages. They are send peer-to-peer directly to the other coworkers. This is a public space, so please be respectful to others.", 'bot');
     });
 
-    function addUserImage(peerId, name, $img) {
+    function addUserImage(peerId, name) {
+        var $img = document.createElement('img');
         $img.id = "img_" + peerId;
         $users.appendChild($img);
 
@@ -343,12 +316,10 @@
 
         var blob = dataURL2Blob(last_pic);
 
-        if (Object.keys(peer_channel_ready).length > 0) {
-            skylink.sendBlobData(blob, {
-                size: blob.size,
-                name: (new Date()).toString()
-            });
-        }
+        skylink.sendBlobData(blob, {
+            size: blob.size,
+            name: (new Date()).toString()
+        });
 
         capture_timeout = setTimeout(capture, 5000);
     }
